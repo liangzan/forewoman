@@ -7,9 +7,26 @@ lib-cov
 *.pid
 *.gz
 
-pids
-logs
-results
+## MAC OS
+.DS_Store
 
+## TEXTMATE
+*.tmproj
+tmtags
+
+## EMACS
+*~
+\#*
+.\#*
+
+## VIM
+*.swp
+
+## PROJECT::GENERAL
+log
+tmp
 node_modules
 npm-debug.log
+
+## PROJECT::SPECIFIC
+scripts/run.js
