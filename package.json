@@ -1,0 +1,24 @@
+{
+  "name": "forewoman",
+  "version": "v0.0.1",
+  "description": "Node.js port of foreman + hot code reloading",
+  "keywords": ["process", "management"],
+  "repository": { "type": "git", "url": "git://github.com/liangzan/forewoman.git" },
+  "bin": { "forewoman": "./bin/forewoman" },
+  "author": "Wong Liang Zan <zan@liangzan.net> (http://liangzan.net)",
+  "main": "./lib/forewoman.js",
+  "engines": {
+    "node" : "~0.6",
+    "npm": "1"
+  },
+  "dependencies": {
+    "optimist": "~0.3.1",
+    "prompt": "~0.1.12",
+    "winston": "~0.5.10",
+    "colors": "~0.6.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.0.2",
+    "should": "~0.6.2"
+  }
+}
