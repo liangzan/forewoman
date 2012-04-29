@@ -9,11 +9,13 @@ var url = require('url')
  */
 
 var port = argv.p || process.env.PORT || 3000;
+var message = process.env.SERVER_MSG || 'Server running at http://127.0.0.1:';
+var echoMsg = process.env.SERVER_ECHO_MSG || '';
 var server = http.createServer();
 
 server.on('request', function(request, response) {
   request.on('end', function() {
-    console.log(url.parse(request.url));
+    console.log(echoMsg + request.url);
     response.writeHead(200, {"Content-Type": "text/plain"});
     response.end();
   });
@@ -21,4 +23,4 @@ server.on('request', function(request, response) {
 });
 
 server.listen(port);
-console.log('Server running at http://127.0.0.1:' + port);
+console.log(message + port);
