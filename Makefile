@@ -1,5 +1,5 @@
 test:
 	./node_modules/.bin/mocha \
-		--reporter list
+		--reporter list test/*.js
 
 .PHONY: test
