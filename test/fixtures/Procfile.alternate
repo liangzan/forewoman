@@ -1,0 +1,2 @@
+alt-server1: node scripts/server.js
+alt-server2: node scripts/server.js

@@ -14,6 +14,7 @@ var command = process.cwd() + '/bin/forewoman';
 var fixturesDir = __dirname + '/fixtures/';
 var workingDir = process.cwd();
 var pidDir = process.cwd() + '/tmp/pids/';
+var alternateRoot = process.cwd() + '/test/alternate_root';
 
 function killRunningProcesses(callback) {
   fs.readdir(pidDir, function(err, files) {
@@ -94,17 +95,64 @@ describe('CLI', function() {
 	});
 
 	forewoman.on('exit', function(code) {
-	  console.log('output:' + output);
 	  (/\[forewoman\] Procfile loaded/.test(output)).should.eql(true);
 	  done();
 	});
       });
-
-      it('can run a single process');
     });
 
     describe('with an alternate root', function() {
-      it('reads the Procfile from that root');
+
+      before(function(done) {
+	var cp = spawn('cp', [fixturesDir + 'Procfile', workingDir]);
+	cp.on('exit', function(code) {
+	  done();
+	});
+      });
+
+      it('reads the Procfile from that root', function(done) {
+	var forewoman = spawn(command, ['start', '-d', alternateRoot]);
+
+	var output = '';
+	forewoman.stdout.on('data', function(data) {
+	  output += data.toString();
+
+	  // manually killing the process
+	  if (fs.readdirSync(pidDir).length === 2) {
+	    killRunningProcesses(function(err) {
+	      if (err) {
+		console.log(err);
+	      }
+	    });
+	  }
+	});
+
+	forewoman.stderr.on('data', function(data) {
+	  output += data.toString();
+	});
+
+	forewoman.on('exit', function(code) {
+	  (/\[forewoman\] Procfile loaded/.test(output)).should.eql(true);
+	  done();
+	});
+      });
+    });
+  });
+
+  describe('run', function() {
+    describe('with a valid Procfile', function() {
+      describe('and a command', function() {
+	it('should load the environment file');
+	it('should run the command as a string');
+      });
+
+      describe('and a non-existent command', function() {
+	it('should print an error');
+      });
+
+      describe('and a non-executable command', function() {
+	it('should print an error');
+      });
     });
   });
 
@@ -143,20 +191,4 @@ describe('CLI', function() {
     });
   });
 
-  describe('run', function() {
-    describe('with a valid Procfile', function() {
-      describe('and a command', function() {
-	it('should load the environment file');
-	it('should run the command as a string');
-      });
-
-      describe('and a non-existent command', function() {
-	it('should print an error');
-      });
-
-      describe('and a non-executable command', function() {
-	it('should print an error');
-      });
-    });
-  });
 });
