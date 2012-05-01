@@ -204,6 +204,51 @@ describe('CLI', function() {
       });
     });
 
+    describe('with a specified port', function() {
+
+      before(function(done) {
+	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
+	var cp = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	var cmd = 'rm ' + workingDir + '/Procfile';
+	var rm = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      it('starts the application from the specified port', function(done) {
+	var forewoman = spawn(command, ['start', '-p', 6000]);
+
+	var output = '';
+	forewoman.stdout.on('data', function(data) {
+	  output += data.toString();
+
+	  // manually killing the process
+	  if (/6001/.test(output)) {
+	    killRunningProcesses(function(err) {
+	      if (err) { console.log(err); }
+	    });
+	  }
+	});
+
+	forewoman.stderr.on('data', function(data) {
+	  output += data.toString();
+	});
+
+	forewoman.on('exit', function(code) {
+	  (/Server running at http\:\/\/127\.0\.0\.1\:6000/.test(output)).should.eql(true);
+	  (/Server running at http\:\/\/127\.0\.0\.1\:6001/.test(output)).should.eql(true);
+	  done();
+	});
+      });
+    });
+
   });
 
   describe('run', function() {
