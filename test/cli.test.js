@@ -336,6 +336,50 @@ describe('CLI', function() {
       });
     });
 
+    describe('with specified environment', function() {
+      before(function(done) {
+	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
+	var cp = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	var cmd = 'rm ' + workingDir + '/Procfile';
+	var rm = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      it('starts the application with the specified env file', function(done) {
+	var forewoman = spawn(command, ['start', '-e', fixturesDir + 'env']);
+
+	var output = '';
+	forewoman.stdout.on('data', function(data) {
+	  output += data.toString();
+
+	  // manually killing the process
+	  if (/5001/.test(output)) {
+	    killRunningProcesses(function(err) {
+	      if (err) { console.log(err); }
+	    });
+	  }
+	});
+
+	forewoman.stderr.on('data', function(data) {
+	  output += data.toString();
+	});
+
+	forewoman.on('exit', function(code) {
+ 	  (/\[server1-0\] I am the server\. I listen to port\:5000/.test(output)).should.eql(true);
+ 	  (/\[server2-0\] I am the server\. I listen to port\:5001/.test(output)).should.eql(true);
+	  done();
+	});
+      });
+    });
+
   });
 
   describe('export', function() {
