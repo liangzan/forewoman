@@ -4,6 +4,7 @@ var cli = require('../lib/cli')
   , spawn = require('child_process').spawn
   , exec = require('child_process').exec
   , should = require('should')
+  , async = require('async')
   , _ = require('underscore');
 
 /*
@@ -17,14 +18,19 @@ var pidDir = process.cwd() + '/tmp/pids/';
 var alternateRoot = process.cwd() + '/test/alternate_root';
 
 function killRunningProcesses(callback) {
-  fs.readdir(pidDir, function(err, files) {
-    _.each(files, function(file) {
-      fs.readFile(pidDir + file, function(err, pidData) {
-	exec('kill ' + pidData, function(err, stdout, stderr) {
-	  return callback(err);
+  var killPID = function(file, pidCallback) {
+    fs.readFile(pidDir + file, function(err, pidData) {
+      if (err) { console.log(err); }
+      else {
+	exec('kill ' + pidData.toString(), function(err, stdout, stderr) {
+	  return pidCallback();
 	});
-      });
+      }
     });
+  };
+
+  fs.readdir(pidDir, function(err, files) {
+    async.forEach(files, killPID, callback);
   });
 };
 
@@ -32,6 +38,7 @@ describe('CLI', function() {
 
   describe('start', function() {
     describe('with a non-existent Procfile', function() {
+
       before(function(done) {
 	var procfilePath = process.cwd() + '/Procfile';
 	path.exists(procfilePath, function(exists) {
@@ -66,9 +73,19 @@ describe('CLI', function() {
     });
 
     describe('with a Procfile', function() {
+
       before(function(done) {
-	var cp = spawn('cp', [fixturesDir + 'Procfile', workingDir]);
-	cp.on('exit', function(code) {
+	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
+	var cp = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	var cmd = 'rm ' + workingDir + '/Procfile';
+	var rm = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
 	  done();
 	});
       });
@@ -83,9 +100,7 @@ describe('CLI', function() {
 	  // manually killing the process
 	  if (fs.readdirSync(pidDir).length === 2) {
 	    killRunningProcesses(function(err) {
-	      if (err) {
-		console.log(err);
-	      }
+	      if (err) { console.log(err); }
 	    });
 	  }
 	});
@@ -101,11 +116,20 @@ describe('CLI', function() {
       });
     });
 
-    describe('with an alternate root', function() {
+    describe('with a specified root', function() {
 
       before(function(done) {
-	var cp = spawn('cp', [fixturesDir + 'Procfile', workingDir]);
-	cp.on('exit', function(code) {
+	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
+	var cp = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	var cmd = 'rm ' + workingDir + '/Procfile';
+	var rm = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
 	  done();
 	});
       });
@@ -120,9 +144,7 @@ describe('CLI', function() {
 	  // manually killing the process
 	  if (fs.readdirSync(pidDir).length === 2) {
 	    killRunningProcesses(function(err) {
-	      if (err) {
-		console.log(err);
-	      }
+	      if (err) { console.log(err); }
 	    });
 	  }
 	});
@@ -137,6 +159,51 @@ describe('CLI', function() {
 	});
       });
     });
+
+    describe('with a specified procfile', function() {
+
+      before(function(done) {
+	var cmd = 'cp ' + fixturesDir + 'Procfile.alternate ' + alternateRoot;
+	var cp = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	var cmd = 'rm ' + alternateRoot + '/Procfile.alternate';
+	var rm = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      it('reads the Procfile from that root', function(done) {
+	var forewoman = spawn(command, ['start', '-f', alternateRoot + '/Procfile.alternate']);
+
+	var output = '';
+	forewoman.stdout.on('data', function(data) {
+	  output += data.toString();
+
+	  // manually killing the process
+	  if (fs.readdirSync(pidDir).length === 2) {
+	    killRunningProcesses(function(err) {
+	      if (err) { console.log(err); }
+	    });
+	  }
+	});
+
+	forewoman.stderr.on('data', function(data) {
+	  output += data.toString();
+	});
+
+	forewoman.on('exit', function(code) {
+	  (/\[forewoman\] Procfile loaded/.test(output)).should.eql(true);
+	  done();
+	});
+      });
+    });
+
   });
 
   describe('run', function() {
