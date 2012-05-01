@@ -290,23 +290,52 @@ describe('CLI', function() {
       });
     });
 
-  });
-
-  describe('run', function() {
-    describe('with a valid Procfile', function() {
-      describe('and a command', function() {
-	it('should load the environment file');
-	it('should run the command as a string');
+    describe('with default environment', function() {
+      before(function(done) {
+	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir
+	+ ' && cp ' + fixturesDir + 'env ' + workingDir + '/.env';
+	var cp = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
       });
 
-      describe('and a non-existent command', function() {
-	it('should print an error');
+      after(function(done) {
+	var cmd = 'rm ' + workingDir + '/Procfile'
+	+ ' && rm ' + workingDir + '/.env';
+	var rm = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
       });
 
-      describe('and a non-executable command', function() {
-	it('should print an error');
+      it('starts the application with the default env file', function(done) {
+	var forewoman = spawn(command, ['start']);
+
+	var output = '';
+	forewoman.stdout.on('data', function(data) {
+	  output += data.toString();
+
+	  // manually killing the process
+	  if (/5001/.test(output)) {
+	    killRunningProcesses(function(err) {
+	      if (err) { console.log(err); }
+	    });
+	  }
+	});
+
+	forewoman.stderr.on('data', function(data) {
+	  output += data.toString();
+	});
+
+	forewoman.on('exit', function(code) {
+ 	  (/\[server1-0\] I am the server\. I listen to port\:5000/.test(output)).should.eql(true);
+ 	  (/\[server2-0\] I am the server\. I listen to port\:5001/.test(output)).should.eql(true);
+	  done();
+	});
       });
     });
+
   });
 
   describe('export', function() {
