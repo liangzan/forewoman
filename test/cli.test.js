@@ -37,8 +37,8 @@ function killRunningProcesses(callback) {
 describe('CLI', function() {
 
   describe('start', function() {
-    describe('with a non-existent Procfile', function() {
 
+    describe('with a non-existent Procfile', function() {
       before(function(done) {
 	var procfilePath = process.cwd() + '/Procfile';
 	path.exists(procfilePath, function(exists) {
@@ -73,7 +73,6 @@ describe('CLI', function() {
     });
 
     describe('with a Procfile', function() {
-
       before(function(done) {
 	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
 	var cp = exec(cmd, function(err, stdout, stderr) {
@@ -117,7 +116,6 @@ describe('CLI', function() {
     });
 
     describe('with a specified root', function() {
-
       before(function(done) {
 	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
 	var cp = exec(cmd, function(err, stdout, stderr) {
@@ -161,7 +159,6 @@ describe('CLI', function() {
     });
 
     describe('with a specified procfile', function() {
-
       before(function(done) {
 	var cmd = 'cp ' + fixturesDir + 'Procfile.alternate ' + alternateRoot;
 	var cp = exec(cmd, function(err, stdout, stderr) {
@@ -205,7 +202,6 @@ describe('CLI', function() {
     });
 
     describe('with a specified port', function() {
-
       before(function(done) {
 	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
 	var cp = exec(cmd, function(err, stdout, stderr) {
@@ -249,6 +245,51 @@ describe('CLI', function() {
       });
     });
 
+    describe('with specified concurrency', function() {
+      before(function(done) {
+	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
+	var cp = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	var cmd = 'rm ' + workingDir + '/Procfile';
+	var rm = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      it('starts the application from the specified port', function(done) {
+	var forewoman = spawn(command, ['start', '-c', 'server1=2']);
+
+	var output = '';
+	forewoman.stdout.on('data', function(data) {
+	  output += data.toString();
+
+	  // manually killing the process
+	  if (/5002/.test(output)) {
+	    killRunningProcesses(function(err) {
+	      if (err) { console.log(err); }
+	    });
+	  }
+	});
+
+	forewoman.stderr.on('data', function(data) {
+	  output += data.toString();
+	});
+
+	forewoman.on('exit', function(code) {
+	  (/\[server1-0\] Server running at http\:\/\/127\.0\.0\.1\:5000/.test(output)).should.eql(true);
+	  (/\[server1-1\] Server running at http\:\/\/127\.0\.0\.1\:5001/.test(output)).should.eql(true);
+	  (/\[server2-0\] Server running at http\:\/\/127\.0\.0\.1\:5002/.test(output)).should.eql(true);
+	  done();
+	});
+      });
+    });
+
   });
 
   describe('run', function() {
@@ -286,20 +327,6 @@ describe('CLI', function() {
       describe('with a valid config', function() {
 	it('runs successfully');
       });
-    });
-  });
-
-  describe('check', function() {
-    describe('with a valid Procfile', function() {
-      it('displays the jobs');
-    });
-
-    describe('with a blank Procfile', function() {
-      it('displays an error');
-    });
-
-    describe('without a Procfile', function() {
-      it('displays an error');
     });
   });
 
