@@ -1,6 +1,6 @@
 # Forewoman
 
-Forewoman is a Node.js port of [foreman](https://github.com/ddollar/foreman), with the added feature of hot code reloading. With credits to [node-supervisor](https://github.com/isaacs/node-supervisor) for inspiring the hot code reloading implementation.
+Forewoman is a Node.js port of [foreman](https://github.com/ddollar/foreman), with the added feature of hot code reloading. Credits to [node-supervisor](https://github.com/isaacs/node-supervisor) for inspiring the hot code reloading implementation.
 
 Export is not completed yet. It will be available from 0.2.x
 
@@ -47,6 +47,9 @@ Specify the number of each process type to run. The value passed in should be in
 
 #### -e, --env
 Specify one or more .env files to load
+
+#### -d, --directory
+Specify an alternate application root. This defaults to the directory containing the Procfile.
 
 #### -f, --procfile
 Specify an alternate Procfile to load, implies -d at the Procfile root.
