@@ -34,7 +34,7 @@ If it is a global install, __forewoman__ should be available from your PATH.
 
 forewoman start is used to run your application directly from the command line.
 
-If no additional parameters are passed, forewoman will run one instance of each type of process defined in your Procfile.
+If no additional parameters are passed, forewoman will run one instance of each type of process defined in your __Procfile__. The format of a __Procfile__ is explained [here](http://blog.daviddollar.org/2011/05/06/introducing-foreman.html)
 
 If a parameter is passed, forewoman will run one instance of the specified application type.
 
