@@ -6,7 +6,7 @@
   "repository": { "type": "git", "url": "git://github.com/liangzan/forewoman.git" },
   "bin": { "forewoman": "./bin/forewoman" },
   "author": "Wong Liang Zan <zan@liangzan.net> (http://liangzan.net)",
-  "main": "./lib/forewoman.js",
+  "main": "./lib/cli.js",
   "engines": {
     "node" : "~0.6",
     "npm": "1"
