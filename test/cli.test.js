@@ -14,6 +14,7 @@ var cli = require('../lib/cli')
 var command = process.cwd() + '/bin/forewoman';
 var fixturesDir = __dirname + '/fixtures/';
 var workingDir = process.cwd();
+var scriptsDir = process.cwd() + '/scripts/';
 var pidDir = process.cwd() + '/tmp/pids/';
 var alternateRoot = process.cwd() + '/test/alternate_root';
 
@@ -375,6 +376,61 @@ describe('CLI', function() {
 	forewoman.on('exit', function(code) {
  	  (/\[server1-0\] I am the server\. I listen to port\:5000/.test(output)).should.eql(true);
  	  (/\[server2-0\] I am the server\. I listen to port\:5001/.test(output)).should.eql(true);
+	  done();
+	});
+      });
+    });
+
+    describe('with file watching', function() {
+      before(function(done) {
+	var cmd = 'cp ' + fixturesDir + 'Procfile ' + workingDir;
+	var cp = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	var cmd = 'rm ' + workingDir + '/Procfile'
+       + ' && cp ' + fixturesDir + 'server.js ' + scriptsDir;
+	var rm = exec(cmd, function(err, stdout, stderr) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      it('restarts the application when watched files are changed', function(done) {
+	var watchOpt = 'server1=' + scriptsDir + 'server.js';
+	var forewoman = spawn(command, ['start', '-w', watchOpt]);
+
+	var output = '';
+	forewoman.stdout.on('data', function(data) {
+	  output += data.toString();
+
+	  // modifying the files
+	  if (/5001/.test(data.toString())) {
+	    var cmd = 'cp ' + fixturesDir + 'server.alternate '
+	   + scriptsDir + 'server.js';
+	    var cp = exec(cmd, function(err, stdout, stderr) {
+	      if (err) { console.log(err); }
+	    });
+	  }
+
+	  // killing the processes
+	  if (/https/.test(data.toString())) {
+	    killRunningProcesses(function(err) {
+	      if (err) { console.log(err); }
+	    });
+	  }
+	});
+
+	forewoman.stderr.on('data', function(data) {
+	  output += data.toString();
+	});
+
+	forewoman.on('exit', function(code) {
+ 	  (/\[server1\-0\] exited with code 1/.test(output)).should.eql(true);
+ 	  (/\[server1\-0\] Server running at https\:\/\/127\.0\.0\.1\:5000/.test(output)).should.eql(true);
 	  done();
 	});
       });
