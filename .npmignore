@@ -2,3 +2,6 @@ test
 log
 scripts
 node_modules
+Procfile
+tmp
+Makefile
