@@ -100,7 +100,7 @@ describe('parser', function() {
   });
 
   describe('for running child processes', function() {
-    it('should an array of running processes that matches the process name', function(done) {
+    it('should return an array of running processes that matches the process name', function(done) {
       var processName = 'server1';
       var childProcs = {
 	'server1-0': 'foo',
@@ -112,6 +112,21 @@ describe('parser', function() {
       };
       var parsedOpt = parser.matchingProcesses(processName, childProcs);
       parsedOpt.should.eql(['server1-0', 'server1-1', 'server1-2']);
+      done();
+    });
+  });
+
+  describe('for inline variables in a command', function() {
+    it('should return the options as an object', function(done) {
+      var command = 'FOO=1 bar=2 TAR=pink node BIN=5 foo.js HOO=har';
+      var parsedOpt = parser.parseInlineVariables(command);
+      parsedOpt.should.eql({
+	bar: '2',
+	TAR: 'pink',
+	BIN: '5',
+	FOO: '1',
+	HOO: 'har'
+      });
       done();
     });
   });
