@@ -39,6 +39,18 @@ describe('parser', function() {
     });
   });
 
+  describe('for template cli options', function() {
+    it('should return the options as an object', function(done) {
+      var cmdOptions = {template: 'run=/path/to/run.mustache,log_run=another/path/to/alt.mustache'};
+      var parsedOpt = parser.parseTemplateOpts(cmdOptions);
+      parsedOpt.should.eql({
+	run: '/path/to/run.mustache',
+	log_run: 'another/path/to/alt.mustache'
+      });
+      done();
+    });
+  });
+
   describe('for environment cli options', function() {
     before(function(done) {
       var cmd = 'cp ' + fixturesDir + 'env ' + workingDir + '/.env';
