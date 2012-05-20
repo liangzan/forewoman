@@ -1,0 +1,2 @@
+server1: node scripts/server.js
+server2: node scripts/server.js
