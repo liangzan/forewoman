@@ -1,0 +1,4 @@
+#!/bin/sh
+cd {{directory}}
+exec chpst -u {{user}} -e {{processEnvDir}} {{processCommand}}
+
