@@ -29,5 +29,5 @@ node_modules
 npm-debug.log
 
 ## PROJECT::SPECIFIC
-Procfile
+./Procfile
 .env
