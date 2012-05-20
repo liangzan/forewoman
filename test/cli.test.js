@@ -408,13 +408,12 @@ describe('CLI', function() {
 	  output += data.toString();
 
 	  // modifying the files
-	  if (/5001/.test(data.toString())) {
-	    var cmd = 'cp ' + fixturesDir + 'server.alternate '
-	   + scriptsDir + 'server.js';
-	    var cp = exec(cmd, function(err, stdout, stderr) {
-	      if (err) { console.log(err); }
-	    });
-	  }
+	  var cmd = 'cp ' + fixturesDir + 'server.alternate '
+	 + scriptsDir + 'server.js';
+	  var cp = exec(cmd, function(err, stdout, stderr) {
+	    if (err) { console.log(err); }
+	  });
+
 
 	  // killing the processes
 	  if (/https/.test(data.toString())) {
@@ -429,10 +428,11 @@ describe('CLI', function() {
 	});
 
 	forewoman.on('exit', function(code) {
- 	  (/\[server1\-0\] exited with code 1/.test(output)).should.eql(true);
+	  (/\[server1\-0\] exited with code 1/.test(output)).should.eql(true);
  	  (/\[server1\-0\] Server running at https\:\/\/127\.0\.0\.1\:5000/.test(output)).should.eql(true);
 	  done();
 	});
+
       });
     });
 
