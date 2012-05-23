@@ -22,23 +22,23 @@ function defaultCmdOptions(opts) {
 
 function verifyEnvPort(procName, portNumber, callback) {
   var portFilePath = __dirname + '/../tmp/' + procName + '/env/PORT';
-  var fileExists = path.existsSync(portFilePath).should.eql(true);
-  var contentExists = fs.readFileSync(portFilePath, 'utf8').should.eql(portNumber);
-  return callback(null, fileExists && contentExists);
+  path.existsSync(portFilePath).should.eql(true);
+  fs.readFileSync(portFilePath, 'utf8').should.eql(portNumber);
+  return callback(null);
 }
 
 function verifyRunTemplate(procName, contents, callback) {
   var runFilePath = __dirname + '/../tmp/' + procName + '/run';
-  var fileExists = path.existsSync(runFilePath).should.eql(true);
-  var contentExists = fs.readFileSync(runFilePath, 'utf8').should.eql(contents);
-  return callback(null, fileExists && contentExists);
+  path.existsSync(runFilePath).should.eql(true);
+  fs.readFileSync(runFilePath, 'utf8').should.eql(contents);
+  return callback(null);
 }
 
 function verifyLogRunTemplate(procName, contents, callback) {
   var logRunFilePath = __dirname + '/../tmp/' + procName + '/log/run';
-  var fileExists = path.existsSync(logRunFilePath).should.eql(true);
-  var contentExists = fs.readFileSync(logRunFilePath, 'utf8').should.eql(contents);
-  return callback(null, fileExists && contentExists);
+  path.existsSync(logRunFilePath).should.eql(true);
+  fs.readFileSync(logRunFilePath, 'utf8').should.eql(contents);
+  return callback(null);
 }
 
 function removeWrittenTemplates(procName, callback) {
