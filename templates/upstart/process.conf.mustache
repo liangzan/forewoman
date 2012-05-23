@@ -1,0 +1,5 @@
+start on starting {{app}}-{{processName}}
+stop on stopping {{app}}-{{processName}}
+respawn
+
+exec su - {{user}} -c 'cd {{directory}}; {{#envVar}} export {{key}}={{val}}; {{/envVar}} {{command}} >> {{logRoot}}/{{processName}}-{{num}}.log 2>&1'

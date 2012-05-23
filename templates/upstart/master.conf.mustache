@@ -1,0 +1,6 @@
+pre-start script
+bash << "EOF"
+  mkdir -p {{logRoot}}
+  chown -R {{user}} {{logRoot}}
+EOF
+end script
