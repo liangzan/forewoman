@@ -1,0 +1,5 @@
+# ----- forewoman alternate {{app}} processes -----
+{{#processes}}
+{{id}}:4:respawn:/bin/su - {{user}} -c 'PORT={{port}} {{processCommand}} >> {{logRoot}}/{{processName}}-{{num}}.log 2>&1'
+{{/processes}}
+# ----- end foreman alternate {{app}} processes -----
