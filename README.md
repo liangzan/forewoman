@@ -70,7 +70,7 @@ An location to export can be passed as an argument. This argument'may be either 
 
 - runit (location not optional)
 - upstart (location not optional)
-- inittab (coming)
+- inittab (location not optional)
 - supervisord (coming)
 - monit (coming)
 
