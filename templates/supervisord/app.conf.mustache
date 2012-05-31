@@ -1,0 +1,14 @@
+{{#processes}}
+[program:{{appName}}]
+command={{processCommand}}
+autostart=true
+autorestart=true
+stopsignal=QUIT
+stdout_logfile={{logRoot}}/{{processName}}-{{num}}-out.log
+stderr_logfile={{logRoot}}/{{processName}}-{{num}}-err.log
+user={{user}}
+directory={{directory}}
+environment={{environmentVar}}
+{{/processes}}
+[group:{{app}}]
+programs={{appNames}}
