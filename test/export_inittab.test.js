@@ -72,6 +72,20 @@ describe('exporter', function() {
     });
 
     describe('given concurrent options', function() {
+      before(function(done) {
+	removeWrittenTemplates(function(err) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	removeWrittenTemplates(function(err) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
       it('should build the template', function(done) {
 	var procs = {
 	  server1: 'node scripts/server.js',
@@ -96,6 +110,20 @@ describe('exporter', function() {
 
 
     describe('given app options', function() {
+      before(function(done) {
+	removeWrittenTemplates(function(err) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	removeWrittenTemplates(function(err) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
       it('should build the template', function(done) {
 	var appName = 'foo';
 	var procs = {
@@ -119,6 +147,20 @@ describe('exporter', function() {
     });
 
     describe('given template options', function() {
+      before(function(done) {
+	removeWrittenTemplates(function(err) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
+      after(function(done) {
+	removeWrittenTemplates(function(err) {
+	  if (err) { console.log(err); }
+	  done();
+	});
+      });
+
       it('should build the template', function(done) {
 	var procs = {
 	  server1: 'node scripts/server.js',
