@@ -60,18 +60,18 @@ Specify the files to watch. If the files are modified, forewoman will restart th
 
 ### SYNOPSIS for export
 
-    forewoman export <format> [location] [OPTION]
+    forewoman export <format> <location> [OPTION]
 
 forewoman export is used to export your application to another process management format
 
-An location to export can be passed as an argument. This argument'may be either required or optional depending on the export format.
+An location to export must be passed as an argument.
 
 ### Formats
 
-- runit (location not optional)
-- upstart (location not optional)
-- inittab (location not optional)
-- supervisord (coming)
+- runit
+- upstart
+- inittab
+- supervisord
 - monit (coming)
 
 ### Options
@@ -106,6 +106,3 @@ Specify an alternate location for the application's Procfile. This file's contai
 ## License
 
 Copyright (c) 2012 Wong Liang Zan. MIT License
-
-
-
