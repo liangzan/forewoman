@@ -1,6 +1,6 @@
 {
   "name": "forewoman",
-  "version": "v0.2.2",
+  "version": "v0.3.0",
   "description": "Node.js port of foreman + hot code reloading",
   "keywords": ["process", "management"],
   "repository": { "type": "git", "url": "git://github.com/liangzan/forewoman.git" },
@@ -8,7 +8,7 @@
   "author": "Wong Liang Zan <zan@liangzan.net> (http://liangzan.net)",
   "main": "./lib/cli.js",
   "engines": {
-    "node" : "~0.6",
+    "node" : "~0.8",
     "npm": "1"
   },
   "dependencies": {
