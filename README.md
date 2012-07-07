@@ -24,6 +24,10 @@ If you choose to install locally, you have to invoke the full path to the __fore
 
 If it is a global install, __forewoman__ should be available from your PATH.
 
+## Versions compatibility
+
+Use v0.2.x for Node v0.6.x. Use the latest for Node v0.8.x.
+
 ## Usage
 
 ### SYNOPSIS for start
