@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/liangzan/forewoman.png)](http://travis-ci.org/liangzan/forewoman)
 # Forewoman
 
 Forewoman is a Node.js port of [foreman](https://github.com/ddollar/foreman), with the added feature of hot code reloading. Credits to [node-supervisor](https://github.com/isaacs/node-supervisor) for inspiring the hot code reloading implementation.
